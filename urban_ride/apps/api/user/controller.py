@@ -172,210 +172,6 @@ def login_register():
         db.session.close()
     return response
 
-# def create_user():
-#     try:
-        
-#         params = request.form
-        
-#         try:
-#             user = db.session.query(User).filter(User.email == params.get('email')).first()
-
-#             auth_token = create_access_token(identity=user.id, fresh=True)
-#             refresh_token = create_refresh_token(user.id)
-            
-#             user_data = {
-#                 'id':user.id,
-#                 'name':user.name,
-#                 'user_name':user.user_name,
-#                 'profile_image':user.profile_image,
-#                 'phone_number':user.phone_number,
-#                 'email':user.email,
-#                 'dob':user.dob,
-#                 'current_currency':user.current_currency,
-#                 'device_id':user.device_ids,
-#                 'created_at':str(user.created_at),
-#             }
-            
-#             response = jsonify({
-#                 'status': 'SUCCESS',
-#                 'code': 302,
-#                 'message': 'User Already Exist',
-#                 'data':{
-#                     'token':auth_token,
-#                     'refresh_token':refresh_token,
-#                     'user':user_data
-#                     }
-#             }), 302
-#         except:
-#             image = upload_image(request.files['profile_image'])
-#             device_id = []
-#             device_id.append(params.get('device_id'))
-#             user = User(
-#                 name = params.get('name'),
-#                 profile_image = image,
-#                 email=params.get('email'),
-#                 device_ids=device_id
-#             )
-            
-#             db.session.add(user)
-#             db.session.commit()
-            
-#             device_details = UserLogin(
-#                 user_id = user.id,
-#                 device_id = params.get('device_id'),
-#                 device_name = params.get('device_name'),
-#                 logged_in_status = True,
-#                 login_at = datetime.now()
-#             )
-                
-#             db.session.add(device_details)
-#             db.session.commit()
-            
-#             auth_token = create_access_token(identity=user.id, fresh=True)
-            
-#             refresh_token = create_refresh_token(user.id)
-            
-#             user_data = {
-#                 'id':user.id,
-#                 'name':user.name,
-#                 'user_name':user.user_name,
-#                 'profile_image':user.profile_image,
-#                 'phone_number':user.phone_number,
-#                 'email':user.email,
-#                 'dob':user.dob,
-#                 'current_currency':user.current_currency,
-#                 'device_id':user.device_ids,
-#                 'created_at':str(user.created_at)
-#             }
-            
-#             response = jsonify({
-#                 'status': 'SUCCESS',
-#                 'code': 200,
-#                 'message': 'User Created SuccessFully ...',
-#                 'data':{
-#                     'token':auth_token,
-#                     'refresh_token':refresh_token,
-#                     'user':user_data,
-#                     }
-#             }), 200
-        
-        
-#     except Exception as e:
-#         print(f"\n\n\n Error {e} \n\n\n")
-#         response = jsonify({
-#             'status': 'ERROR',
-#             'code': 500,
-#             'message': f'Error {str(e)} while creating user.'
-#         }), 500
-#     finally:
-#         db.session.close()
-#     return response
-
-
-# def reorder_username(username):
-#     # Split the username into parts
-#     reorder_usernames = []
-    
-#     if '_' in username:
-#         parts = username.split("_")
-#         if len(parts) >= 2:
-#             reordered_username = f"{parts[1]}_{parts[0]}"
-#             reorder_usernames.append(reordered_username)
-#     if '@' in username:
-#         parts = username.split("@")
-#         if len(parts) >= 2:
-#             reordered_username = f"{parts[1]}@{parts[0]}"
-#             reorder_usernames.append(reordered_username)
-#     if '-' in username:
-#         parts = username.split("-")
-#         if len(parts) >= 2:
-#             reordered_username = f"{parts[1]}-{parts[0]}"
-#             reorder_usernames.append(reordered_username)
-#     return reorder_usernames
-
-
-# def check_username(username):
-    
-#     exists = db.session.query(User.user_name).filter(User.user_name == username).first()
-
-#     if exists:
-#         return False
-#     else:
-#         return True
-    
-# @jwt_required()
-# def suggest_usernames():
-#     try:
-#         user_id = get_jwt_identity()
-#         username = request.args.get('user_name')
-        
-#         suggestions = []
-
-#         # reordered_username = reorder_username(username)
-
-#         # for user_name in reordered_username:
-#         #     suggestions.append(user_name)
-
-#         # Check if the provided username can be reordered
-#         availability = check_username(username)
-        
-#         if availability:
-#             response = jsonify({
-#                 'status': 'SUCCESS',
-#                 'code': 404,
-#                 'message': 'available'
-#             }), 404
-#         else:
-#             user = db.session.query(User).filter(User.id == user_id).first()
-#             if user.name != None or user.name != '':
-#                     if ' ' in user.name:
-#                         name = user.name.split(' ')
-#                     else:
-#                         name = None
-#             email = user.email.split('@')
-#             if name:
-#                 suggestions.append(f"{name[0].lower()}{name[1].lower()}")
-#             suggestions.append(f"{email[0]}")
-            
-#             if name:
-#                 if len(name) >= 2:
-#                     first_name, last_name = name[0], name[-1]
-#                     suggestions.append(f"{last_name[0].lower()}{first_name.lower()}")
-#                     suggestions.append(f"{first_name.lower()}{last_name[0].lower()}")
-                
-#             for _ in range(4):
-#                 randon_number = random.randint(111,999)
-#                 numbered_username = f"{username}{randon_number}"
-#                 suggestions.append(numbered_username)
-            
-#             for user_name in suggestions:
-#                 exists = db.session.query(User).filter(User.user_name == user_name).first()
-                
-#                 if exists:
-#                     suggestions.remove(exists.user_name)
-#             print(f"\n\n\n suggestions { suggestions } \n\n\n")
-                    
-
-#             response = jsonify({
-#                 'status': 'SUCCESS',
-#                 'code': 200,
-#                 'message': 'Not Available check suggested user_name list',
-#                 'data': suggestions
-#             }), 200
-            
-#     except Exception as e:
-#         print(f"\n\n\n Error {e} \n\n\n")
-#         response = jsonify({
-#             'status': 'ERROR',
-#             'code': 500,
-#             'message': f'Error {str(e)} while creating user.'
-#         }), 500
-#     finally:
-#         db.session.close()
-#     return response
-        
-    
-
 # @jwt_required()
 # def update_user():
 #     try:
@@ -786,44 +582,44 @@ def login_register():
 #         db.session.close()
 #     return response
 
-# @jwt_required()
-# def log_out():
-#     try:
-#         user_id = get_jwt_identity()
-#         device_id = request.args.get('device_id')
+@jwt_required()
+def log_out():
+    try:
+        user_id = get_jwt_identity()
+        device_id = request.args.get('device_id')
         
-#         # add logout time and status in user_login table
+        # add logout time and status in user_login table
         
-#         login_info = db.session.query(UserLogin).filter(
-#             UserLogin.user_id == user_id,
-#             UserLogin.device_id == device_id,
-#             UserLogin.logout_at == None,
-#             UserLogin.logged_in_status == True
-#             ).first()
+        login_info = db.session.query(UserLogin).filter(
+            UserLogin.user_id == user_id,
+            UserLogin.device_id == device_id,
+            UserLogin.logout_at == None,
+            UserLogin.logged_in_status == True
+            ).first()
         
-#         login_info.logout_at = datetime.now()
-#         login_info.logged_in_status = False
+        login_info.logout_at = datetime.now()
+        login_info.logged_in_status = False
         
-#         db.session.commit()
+        db.session.commit()
         
-#         response = jsonify({
-#             'status': 'SUCCESS',
-#             'code': 200,
-#             'message': "Logged Out SuccessFully...",
-#         }), 200
+        response = jsonify({
+            'status': 'SUCCESS',
+            'code': 200,
+            'message': "Logged Out SuccessFully...",
+        }), 200
         
-#     except Exception as e:
-#         print(f"\n\n\n Error {e} \n\n\n")
-#         response = jsonify({
-#             'status': 'ERROR',
-#             'code': 500,
-#             'message': f'Error {str(e)}'
-#         }), 500
+    except Exception as e:
+        print(f"\n\n\n Error {e} \n\n\n")
+        response = jsonify({
+            'status': 'ERROR',
+            'code': 500,
+            'message': f'Error {str(e)}'
+        }), 500
         
-#     finally:
-#         db.session.close()
+    finally:
+        db.session.close()
         
-#     return response
+    return response
 
 
 # def get_all_users():

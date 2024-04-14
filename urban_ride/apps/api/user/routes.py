@@ -1,10 +1,11 @@
 from apps import app
 from apps.api.user.controller import (
     login_register,send_otp,testing_api,
+    log_out,
     # email_verification,upload_image,create_user,
     # update_user,suggest_usernames,current_email_verification,
     # new_email_verification,get_user_profile,search_user,
-    # get_all_users,delete_users,log_out,
+    # get_all_users,delete_users,
 )
 
 app.add_url_rule(
@@ -59,9 +60,9 @@ app.add_url_rule(
 #     '/delete_users/', 'delete_users', delete_users, methods=['POST']
 #     )
 
-# app.add_url_rule(
-#     '/log_out/', 'log_out', log_out, methods=['POST']
-#     )
+app.add_url_rule(
+    '/log_out/', 'log_out', log_out, methods=['POST']
+    )
 
 # app.add_url_rule(
 #     '/upload_image/', 'upload_image', upload_image, methods=['POST']
